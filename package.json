@@ -1,0 +1,20 @@
+{
+  "name": "craftpr",
+  "version": "1.0.0",
+  "description": "CLI tool to streamline the process of reviewing code changes and creating a Pull Request.",
+  "main": "index.js",
+  "bin": {
+    "craftpr": "./server/main.js"
+  },
+  "scripts": {
+    "dev": "nodemon ./server/main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tanay Karnik",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "simple-git": "^3.25.0"
+  }
+}
