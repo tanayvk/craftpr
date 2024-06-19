@@ -1,3 +1,9 @@
+@font-face {
+  font-family: Neon;
+  src: url("/webfonts/MonaspaceNeon-Regular.woff2");
+  font-weight: 400;
+}
+
 @tailwind base;
 @tailwind utilities;
 @tailwind components;

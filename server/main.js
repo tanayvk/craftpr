@@ -1,16 +1,15 @@
 #! /usr/bin/env node
 
-// check if git is installed
-// look for a git repository in cwd
-// start express server with api and serve static files from client/dist
-// create a post call for returning a list of changed files
-
-const { execSync } = require("child_process");
+const { execSync, exec } = require("child_process");
 const simpleGit = require("simple-git");
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+const { promisify } = require("util");
+
+const readFileAsync = promisify(fs.readFile);
+const execAsync = promisify(exec);
 
 // Check if Git is installed
 try {
@@ -51,18 +50,53 @@ function startServer() {
   }
 
   // POST endpoint to return a list of changed files
-  app.post("/changed-files", async (req, res) => {
+  app.post("/diff", async (req, res) => {
     try {
       const status = await git.status();
-      res.json({ changedFiles: status.files.map((file) => file.path) });
+      res.json({ files: status.files });
     } catch (error) {
       console.error("Error getting changed files:", error);
       res.status(500).json({ error: "Error getting changed files" });
     }
   });
 
-  app.get("/test", (req, res) => {
-    res.json({ test: "test" });
+  app.post("/file", async (req, res) => {
+    try {
+      const path = req.query.path;
+      const diff = await git.diff(["HEAD", path]);
+      console.log("diff", diff);
+      // const [newBuffer, oldBuffer] = await Promise.all([
+      //   readFileAsync(path)
+      //     .then((data) => data.toString())
+      //     .catch((err) => {
+      //       console.error("err reading file", err);
+      //       return "";
+      //     }),
+      //   git.show(`HEAD:${path}`).catch((err) => {
+      //     console.error("err git show", err);
+      //     return "";
+      //   }),
+      // ]);
+      res.json({
+        diff,
+      });
+    } catch (error) {
+      console.log("file diff error", error);
+      res.status(500).json({});
+    }
+  });
+
+  app.post("/open", async (req, res) => {
+    try {
+      const filePath = req.query.path;
+      const fullPath = path.resolve(process.cwd(), filePath);
+      console.log("full", fullPath);
+      await execAsync(`code ${fullPath}`);
+      res.json({});
+    } catch (error) {
+      console.log("error open", path, error);
+      res.status(500).json({});
+    }
   });
 
   app.listen(port, () => {
