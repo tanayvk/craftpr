@@ -19,30 +19,22 @@ export const useFiles = () => {
           setFiles(files);
           return data;
         }),
-    // .then((data) => {
-    //   // TODO: fix ugly way
-    //   setFiles(data?.files || []);
-    //   return data;
-    // }),
   });
 };
 
-export const useFileDiff = (filePath) => {
-  return useQuery({
-    queryKey: [`files/${filePath}`],
-    queryFn: () => {
-      if (!filePath) return null;
-      return fetch(baseUrl + `/file?path=${encodeURIComponent(filePath)}`, {
-        method: "POST",
-      }).then((data) => {
-        return data.json();
-      });
-    },
-  });
-};
-
-export const openFile = async (path) => {
-  await fetch(baseUrl + `/open?path=${encodeURIComponent(path)}`, {
+export const fetchFileDiff = (filePath) =>
+  fetch(baseUrl + `/file?path=${encodeURIComponent(filePath)}`, {
     method: "POST",
+  }).then((data) => {
+    return data.json();
   });
+
+export const openFile = async (path, lineNumber) => {
+  console.log("open", path, lineNumber);
+  await fetch(
+    baseUrl + `/open?path=${encodeURIComponent(path)}&line=${lineNumber}`,
+    {
+      method: "POST",
+    },
+  );
 };

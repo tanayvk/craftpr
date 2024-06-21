@@ -1,6 +1,6 @@
 {
   "name": "craftpr",
-  "version": "1.0.0",
+  "version": "0.0.3",
   "description": "CLI tool to streamline the process of reviewing code changes and creating a Pull Request.",
   "main": "index.js",
   "bin": {
@@ -17,6 +17,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "nodemon": "^3.1.3",
+    "parse-git-diff": "^0.0.15",
     "simple-git": "^3.25.0"
   }
 }
